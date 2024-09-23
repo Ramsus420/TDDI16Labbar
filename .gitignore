@@ -1,0 +1,14 @@
+fast
+slow
+/Lab2/build/
+*.o
+*~
+*.exe
+*.user
+*.iobj
+*.ipdb
+*.pdb
+.vs/
+/Lab2/medium/
+/Lab2/small/
+/Lab2/tiny/
