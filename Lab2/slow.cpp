@@ -75,7 +75,7 @@ int main(int argc, const char *argv[]) {
         vector<string> matches;
         matches.push_back(files[i]);
 
-        cout << "Examining " << files[i] << "..." << endl;
+       // cout << "Examining " << files[i] << "..." << endl;
 
         for (size_t j = i + 1; j < images.size(); j++) {
             double difference = images[i].compare_to(images[j]);
@@ -95,6 +95,10 @@ int main(int argc, const char *argv[]) {
     cout << "Total time: "
          << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
          << " milliseconds." << endl;
+
+    std::cout << "Calculating duplicates took: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end - load_time).count()
+              << " milliseconds." << std::endl;
 
     return 0;
 }

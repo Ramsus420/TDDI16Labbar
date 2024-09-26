@@ -7,8 +7,8 @@ Bildmatchning
 - Vad är tidskomplexiteten på "slow.cpp" och din implementation av "fast.cpp",
   uttryckt i antalet bilder (n).
 
-slow:
-fast:
+slow: n²
+fast: n
 
 
 - Hur lång tid tar det att köra "slow.cpp" respektive "fast.cpp" på de olika
@@ -23,10 +23,10 @@ fast:
 |--------+-----------+----------+----------|
 |        | inläsning | slow.cpp | fast.cpp |
 |--------+-----------+----------+----------|
-| tiny   |           |          |          |
-| small  |           |          |          |
-| medium |           |          |          |
-| large  |           |          |          |
+| tiny   |  72-232   |   49     |    41    |
+| small  |  534-541  |   114    |    118   |
+| medium | 2121-2149 |   563    |    109   |
+| large  |52541-55528| 555384   |    126   |
 |--------+-----------+----------+----------|
 
 

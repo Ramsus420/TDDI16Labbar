@@ -55,12 +55,11 @@ namespace std {
     // Vi behöver därför överlagra funktionsanropsoperatorn (operator ()).
     size_t operator ()(const Image_Summary &to_hash) const {
         size_t hash = 0;
-        for (bool b : to_hash.horizontal) {
-            hash = hash * 2 + b;
+        for (const auto& h : to_hash.horizontal) {
+            hash = hash * 2 + h;
         }
-        hash = hash * 2 + 1;
-        for (bool b : to_hash.vertical) {
-            hash = hash * 2 + b;
+        for (const auto& v : to_hash.vertical) {
+            hash = hash * 2 + v;
         }
         return hash;
     }
@@ -88,11 +87,6 @@ Image_Summary compute_summary(const Image &image) {
         }
     }
 
-    // TODO: Finish the implementation.
-    // The lines below are here to avoid warnings. They can be removed.
-    (void)image;
-    (void)summary_size;
-
     return result;
 }
 
@@ -117,9 +111,12 @@ int main(int argc, const char *argv[]) {
 
     auto begin = std::chrono::high_resolution_clock::now();
 
-    vector<Image_Summary> Image_Summaries;
-    for (const auto &file : files){
-        Image_Summaries.push_back(compute_summary(load_image(file).shrink(summary_size + 1, summary_size + 1)));
+    unordered_map<Image_Summary, vector<string>> duplicates;
+    std::vector<Image> images;
+
+    //load images
+    for(const auto &file : files){
+        images.push_back(load_image(file).shrink(summary_size + 1, summary_size + 1));
     }
 
     auto load_time = std::chrono::high_resolution_clock::now();
@@ -127,23 +124,25 @@ int main(int argc, const char *argv[]) {
          << std::chrono::duration_cast<std::chrono::milliseconds>(load_time - begin).count()
          << " milliseconds." << endl;
 
+    //compute summaries and find duplicates
+    for (size_t i = 0; i < images.size(); i++) {
+        duplicates[compute_summary(images.at(i))].push_back(files.at(i));
+    }
 
-
-    unordered_map<Image_Summary, vector<string>> duplicates;
-    
-    
-
-    /**
-     * TODO:
-     * - Display sets of files with equal summaries
-     */
-
-
-
+    //report duplicates
+    for(auto image : duplicates){
+        if(image.second.size() > 1){
+            window->report_match(image.second);
+        }
+    }
 
     auto end = std::chrono::high_resolution_clock::now();
     cout << "Total time: "
          << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+         << " milliseconds." << endl;
+
+    cout << "Calculating duplicates took: "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - load_time).count()
          << " milliseconds." << endl;
 
     return 0;
