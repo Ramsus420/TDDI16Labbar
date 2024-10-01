@@ -61,6 +61,7 @@ namespace std {
         for (const auto& v : to_hash.vertical) {
             hash = hash * 2 + v;
         }
+        std::cout << hash << std::endl;
         return hash;
     }
     };
@@ -94,6 +95,7 @@ int main(int argc, const char *argv[]) {
     WindowPtr window = Window::create(argc, argv);
 
     int summary_size{8};
+    int duplicate_amount{0};
 
     if (argc < 2) {
         cerr << "Usage: " << argv[0] << " [--nopause] [--nowindow] <directory>" << endl;
@@ -130,9 +132,10 @@ int main(int argc, const char *argv[]) {
     }
 
     //report duplicates
-    for(auto image : duplicates){
+    for(auto const& image : duplicates){
         if(image.second.size() > 1){
             window->report_match(image.second);
+            duplicate_amount += image.second.size();
         }
     }
 
@@ -144,6 +147,8 @@ int main(int argc, const char *argv[]) {
     cout << "Calculating duplicates took: "
          << std::chrono::duration_cast<std::chrono::milliseconds>(end - load_time).count()
          << " milliseconds." << endl;
+
+    cout << "Found " << duplicate_amount << " duplicates." << endl;
 
     return 0;
 }
