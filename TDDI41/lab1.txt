@@ -1,0 +1,19 @@
+2.1
+
+    Vilken/vilka är gästmaskinerna?
+
+      Gästmaskinen är den virtuella maskinen vi skapade upp i terminalen.
+
+    Vilken/vilka är värdmaskinerna?
+
+    Värdmaskinen är datorn vi jobba på i salen.
+
+
+5.2
+   5. Kopiera filen /etc/network/interfaces från VM:en till er hemkatalog [förtydligande: den utanför VM:en, alltså på LiU-system]
+      Kommando stående i home:
+       scp -P 2220 root@127.0.0.1:/etc/network/interfaces ./
+      
+   6. Kopiera mappen /etc/default och allt dess innehåll från VM:en till er hemkatalog [förtydligande: den utanför VM:en, alltså på LiU-system]
+      Kommando stående i home:
+       scp -r -P 2220 root@127.0.0.1:/etc/default ./

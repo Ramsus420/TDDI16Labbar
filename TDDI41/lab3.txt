@@ -1,0 +1,31 @@
+1.
+    hur installerar man ett paket?
+    apt/dpkg install 
+    
+    hur avinstalerar man ett paket?
+    apt/dpkg remove
+
+    hur avinstalerar man verkligen ett paket (d.v.s. hur tar man bort paketet och alla dess filer)
+    apt/dpkg purge
+    
+    Hur får man de senaste uppdateringarna till sitt system 
+    apt/dpkg update
+    apt/dpkg upgrade
+
+    hur ser man vilka filer som ett paket tillhandahåller?
+    dpkg -L PAKETNAMN
+    
+    hur ser man vilket paket som tillhandahåller en fil?
+    dpkg -S FILNAMN
+
+2.
+    Installera paketet cowsay
+
+    Verifiera att det är instalerat, och testkör cowsay
+
+    Avinstallera cowsay
+
+3.
+    Hur lägger man till ett nytt repo?
+
+    Hur tar man bort ett repo?
