@@ -97,10 +97,34 @@
         Fil som innehåller publika delen av nyckeln: /home/rasri696/.ssh/id-sysadminkurs-ed25519.pub
 
         //kopiera publika key till VM
+        På dator:
         scp -P 2220 .ssh/id-sysadminkurs-ed25519.pub root@127.0.0.1:
+        I VM:
+        chmod 700 ~/.ssh
+        cat ~/id_ecdsa.pub >> ~/.ssh/authorized_keys
+        chmod 600 ~/.ssh/authorized_keys
+        cat .ssh/authorized_keys
 
-        to do:
-            $ chmod 700 ~/.ssh
-$ cat ~/id_ecdsa.pub >> ~/.ssh/authorized_keys
-$ rm ~/id_ecdsa.pub
-$ chmod 600 ~/.ssh/authorized_keys
+        ssh-add .ssh/id-sysadminkurs-ed25519
+
+        //logga in på VM utan lösenord
+        På dator:
+
+        rasri696@su15-218:~$ ssh -p 2220 root@127.0.0.1
+        Linux debian 5.10.0-15-amd64 #1 SMP Debian 5.10.120-1 (2022-06-09) x86_64
+
+        The programs included with the Debian GNU/Linux system are free software;
+        the exact distribution terms for each program are described in the
+        individual files in /usr/share/doc/*/copyright.
+
+        Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+        permitted by applicable law.
+        Last login: Fri Oct  4 10:45:51 2024 from 10.0.2.2
+        root@debian:~# ls
+        id-sysadminkurs-ed25519.pub  rasmus-test  rasri696@edu.liu.se  test
+        root@debian:~# 
+
+
+        //visa inladdade ssh nycklar
+        ssh-add -L
+

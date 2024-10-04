@@ -20,12 +20,15 @@
 
 2.
     Installera paketet cowsay
-
+    apt install cowsay
     Verifiera att det är instalerat, och testkör cowsay
-
+    installerat i usr/games/
+    i usr/games/ kör ./cowsay hello,world!
     Avinstallera cowsay
-
+    apt remove cowsay
 3.
     Hur lägger man till ett nytt repo?
+    add-apt-repository [reponamn]
 
     Hur tar man bort ett repo?
+    add-apt-repository -r [reponamn]
