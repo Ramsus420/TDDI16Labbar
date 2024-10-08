@@ -11,7 +11,7 @@ using std::endl;
 // representationen av en ordlista utefter vad din implementation behöver. Funktionen
 // "read_questions" skickar ordlistan till "find_shortest" och "find_longest" med hjälp av denna
 // typen.
-typedef vector<string> Dictionary;
+//typedef vector<string> Dictionary;
 
 /**
  * Hitta den kortaste ordkedjan från 'first' till 'second' givet de ord som finns i
@@ -20,7 +20,8 @@ typedef vector<string> Dictionary;
  */
 vector<string> find_shortest(const Dictionary &dict, const string &from, const string &to) {
     vector<string> result;
-    cout << "TODO: Implement me!" << endl;
+    
+
     return result;
 }
 
@@ -30,7 +31,8 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
  */
 vector<string> find_longest(const Dictionary &dict, const string &word) {
     vector<string> result(1, word);
-    cout << "TODO: Implement me!" << endl;
+    
+    
     return result;
 }
 

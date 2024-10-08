@@ -32,9 +32,9 @@ fast: n
 
 - Testa olika värden på "summary_size" (exempelvis mellan 6 och 10). Hur
   påverkar detta vilka dubbletter som hittas i datamängden "large"?
-  8: 18st
-  6: 18st
-  10: 10st
+  8: 18st ny 16st match 8
+  6: 18st ny 18st match 9
+  10: 10st ny 10st match 5
 
 
 - Algoritmen som implementeras i "compute_summary" kan ses som att vi beräknar
@@ -46,7 +46,10 @@ fast: n
   Det blir en avvägning mellan hur detaljerad man är i sammanfattningen och tidskomplexiteten för funktionen.
   Vi vill idealt ta fram en funktion som är så snabb som möjligt men som även kan identifiera så många dubletter som möjligt.
   Vi tycker den giva fungerar tillräckligt bra för denna labb, den har bra tidskomplexitet och vi kan välja hur nogranna vi vill vara
-  när vi tar fram image_summary.
+  när vi tar fram image_summary. 
+  Egenskaper som comupute summary behöver ha är unikhet alltså att den bör generera en unik "hash" för varje unik bild
+  och konsistens alltså att samma bild bör alltid resultera i samma sammanfattning. Den bör också vara snabb nog att hantera stora mängder bilder.
+  Det bör också finnas en balans för hur känslig den är mellan två nästan identiska bilder.
 
 
 

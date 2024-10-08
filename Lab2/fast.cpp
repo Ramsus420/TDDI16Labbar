@@ -74,7 +74,7 @@ Image_Summary compute_summary(const Image &image) {
     const size_t height = image.height();
     Image_Summary result;
 
-    for(size_t x = 0; x < width; x++){
+    for(size_t x = 0; x < width - 1; x++){
         for(size_t y = 0; y < height; y++){
             if(image.pixel(x, y).brightness() < image.pixel(x + 1, y).brightness()){
                 result.horizontal.push_back(true);
@@ -85,7 +85,7 @@ Image_Summary compute_summary(const Image &image) {
     }
 
     for(size_t x = 0; x < width; x++){
-        for(size_t y = 0; y < height; y++){
+        for(size_t y = 0; y < height - 1; y++){
             if(image.pixel(x, y).brightness() < image.pixel(x, y + 1).brightness()){
                 result.vertical.push_back(true);
             } else {
