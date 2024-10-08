@@ -70,23 +70,30 @@ namespace std {
 // Compute an Image_Summary from an image. This is described in detail in the
 // lab instructions.
 Image_Summary compute_summary(const Image &image) {
-    const size_t summary_size = 8;
+    const size_t width = image.width();
+    const size_t height = image.height();
     Image_Summary result;
 
-    for(size_t x = 0; x < summary_size; x++){
-        for(size_t y = 0; y < summary_size; y++){
+    for(size_t x = 0; x < width; x++){
+        for(size_t y = 0; y < height; y++){
             if(image.pixel(x, y).brightness() < image.pixel(x + 1, y).brightness()){
-                result.horizontal.push_back(false);
-            } else {
                 result.horizontal.push_back(true);
-            }
-            if(image.pixel(x, y).brightness() < image.pixel(x, y + 1).brightness()){
-                result.vertical.push_back(false);
             } else {
-                result.vertical.push_back(true);
+                result.horizontal.push_back(false);
             }
         }
     }
+
+    for(size_t x = 0; x < width; x++){
+        for(size_t y = 0; y < height; y++){
+            if(image.pixel(x, y).brightness() < image.pixel(x, y + 1).brightness()){
+                result.vertical.push_back(true);
+            } else {
+                result.vertical.push_back(false);
+            }
+        }
+    }
+    
 
     return result;
 }
