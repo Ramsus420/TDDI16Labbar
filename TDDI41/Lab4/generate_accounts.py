@@ -54,8 +54,8 @@ def main(filename):
         username = generate_username(name)
         generated_usernames.append(username)
         password = generate_password()
-        #create_user(username)
-        #set_password(username, password)
+        create_user(username)
+        set_password(username, password)
         print(f"User {username} created with password {password}")
 
 if __name__ == "__main__":

@@ -57,6 +57,21 @@
         systemctl list-units --all
     Hur startar man om sin ssh-server (starta systemtjänsten)?
         systemctl restart ssh
+
+2.2
+    journalctl -u ssh | grep "Oct 10"
+
+    Oct 10 15:17:42 debian systemd[1]: Starting OpenBSD Secure Shell server...
+    Oct 10 15:17:43 debian sshd[367]: Server listening on 0.0.0.0 port 22.
+    Oct 10 15:17:43 debian sshd[367]: Server listening on :: port 22.
+    Oct 10 15:17:43 debian systemd[1]: Started OpenBSD Secure Shell server.
+    Oct 10 15:18:39 debian sshd[396]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.0.2.2  user=root
+    Oct 10 15:18:41 debian sshd[396]: Failed password for root from 10.0.2.2 port 53752 ssh2
+    Oct 10 15:18:46 debian sshd[396]: Accepted password for root from 10.0.2.2 port 53752 ssh2
+    Oct 10 15:18:46 debian sshd[396]: pam_unix(sshd:session): session opened for user root(uid=0) by (uid=0)
+
+
+
 2.3
     På LiU-system (alltså inte inuti VM): skapa en ed25519-nyckel som ni ger ett namn i stil med ~/.ssh/id-sysadminkurs-ed25519. Ge den ett bra och unikt lösenord. Nyckeln bör bara användas till den här kursen, och för att ansluta till era VM:ar.
 
