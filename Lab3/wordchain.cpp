@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
+#include <queue>
+#include <algorithm>
 
 using std::vector;
 using std::string;
@@ -11,16 +15,58 @@ using std::endl;
 // representationen av en ordlista utefter vad din implementation behöver. Funktionen
 // "read_questions" skickar ordlistan till "find_shortest" och "find_longest" med hjälp av denna
 // typen.
-//typedef vector<string> Dictionary;
+typedef std::unordered_set<string> Dictionary;
 
 /**
  * Hitta den kortaste ordkedjan från 'first' till 'second' givet de ord som finns i
  * 'dict'. Returvärdet är den ordkedja som hittats, första elementet ska vara 'from' och sista
  * 'to'. Om ingen ordkedja hittas kan en tom vector returneras.
  */
+
+vector<string> find_neighbours(const Dictionary &dict, const string &word) {
+    vector<string> neighbours;
+    for (size_t i {0}; i < word.size(); i++){
+        string temp = word;
+        for (char c = 'a'; c <= 'z'; c++){
+            temp[i] = c;
+            if (temp != word && dict.find(temp) != dict.end()){
+                neighbours.push_back(temp);
+            }
+        }
+    }
+    return neighbours;
+}
+
 vector<string> find_shortest(const Dictionary &dict, const string &from, const string &to) {
     vector<string> result;
-    
+    //BFS
+    std::unordered_set<string> visited;
+    std::unordered_map<string, string> parent;
+    std::queue<string> q;
+    q.push(from);
+    visited.insert(from);
+    while (!q.empty()){
+        string current = q.front();
+        q.pop();
+        if (current == to){
+            string temp = current;
+            while (temp != from){
+                result.push_back(temp);
+                temp = parent[temp];
+            }
+            result.push_back(from);
+            std::reverse(result.begin(), result.end());
+            return result;
+        }
+        vector<string> neighbours = find_neighbours(dict, current);
+        for (size_t i = 0; i < neighbours.size(); i++){
+            if (visited.find(neighbours[i]) == visited.end()){
+                visited.insert(neighbours[i]);
+                parent[neighbours[i]] = current;
+                q.push(neighbours[i]);
+            }
+        }
+    }
 
     return result;
 }
@@ -107,6 +153,8 @@ void read_questions(const Dictionary &dict) {
 
 int main() {
     Dictionary dict = read_dictionary();
+    
+    
     read_questions(dict);
 
     return 0;

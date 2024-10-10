@@ -32,9 +32,9 @@ fast: n
 
 - Testa olika värden på "summary_size" (exempelvis mellan 6 och 10). Hur
   påverkar detta vilka dubbletter som hittas i datamängden "large"?
-  8: 18st ny 16st match 8
-  6: 18st ny 18st match 9
-  10: 10st ny 10st match 5
+  8: 16st match 8
+  6: 18st match 9
+  10: 10st match 5
 
 
 - Algoritmen som implementeras i "compute_summary" kan ses som att vi beräknar
