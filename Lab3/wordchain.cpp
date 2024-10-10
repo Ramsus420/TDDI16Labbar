@@ -77,8 +77,21 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
  */
 vector<string> find_longest(const Dictionary &dict, const string &word) {
     vector<string> result(1, word);
-    
-    
+    std::unordered_map<string, vector<string>> shortest_paths;
+
+    for (const auto &dict_word : dict) {
+        if (dict_word == word) {
+            continue;
+        }
+        if (shortest_paths.find(dict_word) == shortest_paths.end()) {
+            shortest_paths[dict_word] = find_shortest(dict, dict_word, word);
+        }
+        const vector<string> &temp = shortest_paths[dict_word];
+        if (temp.size() > result.size()) {
+            result = temp;
+        }
+    }
+
     return result;
 }
 
