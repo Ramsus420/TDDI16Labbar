@@ -8,6 +8,7 @@ slow
 *.iobj
 *.ipdb
 *.pdb
+*.out
 .vs/
 /Lab2/medium/
 /Lab2/small/
