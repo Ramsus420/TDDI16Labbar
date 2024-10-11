@@ -39,7 +39,6 @@ vector<string> find_neighbours(const Dictionary &dict, const string &word) {
 
 vector<string> find_shortest(const Dictionary &dict, const string &from, const string &to) {
     vector<string> result;
-    //BFS
     std::unordered_set<string> visited;
     std::unordered_map<string, string> parent;
     std::queue<string> q;
@@ -77,20 +76,25 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
  */
 vector<string> find_longest(const Dictionary &dict, const string &word) {
     vector<string> result(1, word);
-    std::unordered_map<string, vector<string>> shortest_paths;
-
-    for (const auto &dict_word : dict) {
-        if (dict_word == word) {
-            continue;
-        }
-        if (shortest_paths.find(dict_word) == shortest_paths.end()) {
-            shortest_paths[dict_word] = find_shortest(dict, dict_word, word);
-        }
-        const vector<string> &temp = shortest_paths[dict_word];
-        if (temp.size() > result.size()) {
-            result = temp;
+    std::unordered_map<string, int> visited;
+    std::queue<string> q;
+    q.push(word);
+    visited[word] = 1;
+    while (!q.empty()){
+        string current = q.front();
+        q.pop();
+        vector<string> neighbours = find_neighbours(dict, current);
+        for (size_t i = 0; i < neighbours.size(); i++){
+            if (visited.find(neighbours[i]) == visited.end()){
+                visited[neighbours[i]] = visited[current] + 1;
+                q.push(neighbours[i]);
+                if (visited[neighbours[i]] > result.size()){
+                    result.push_back(neighbours[i]);
+                }
+            }
         }
     }
+    std::reverse(result.begin(), result.end());
 
     return result;
 }
