@@ -38,6 +38,11 @@ vector<string> find_neighbours(const Dictionary &dict, const string &word) {
 }
 
 vector<string> find_shortest(const Dictionary &dict, const string &from, const string &to) {
+    // Check if 'from' or 'to' are not in the dictionary
+    if (dict.find(from) == dict.end() || dict.find(to) == dict.end()) {
+        return {};
+    }
+
     vector<string> result;
     std::unordered_set<string> visited;
     std::unordered_map<string, string> parent;
@@ -66,8 +71,7 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
             }
         }
     }
-
-    return result;
+    return {};
 }
 
 /**
@@ -75,6 +79,9 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
  * ordkedja som hittats. Det sista elementet ska vara 'word'.
  */
 vector<string> find_longest(const Dictionary &dict, const string &word) {
+     if (dict.find(word) == dict.end()) {
+        return {};
+    }
     vector<string> result(1, word);
     std::unordered_map<string, int> visited;
     std::queue<string> q;
