@@ -39,13 +39,30 @@ int main(int argc, const char* argv[]) {
     window->draw_points(points);
 
     // Sort points by their natural order. Makes finding endpoints a bit easier.
-    sort(points.begin(), points.end());
+   // sort(points.begin(), points.end());
 
     auto begin = chrono::high_resolution_clock::now();
 
-    /////////////////////////////////////////////////////////////////////////////
-    // Draw any lines that you find in 'points' using the function 'window->draw_line'.
-    /////////////////////////////////////////////////////////////////////////////
+    sort(points.begin(), points.end());
+
+    // Iterate through all possible origins:
+    for (int o{0}; o < N; ++o) {
+        // Select a point p from the set of all points
+        Point p = points[o];
+
+        //sortera resten av punkterna efter lutning
+        sort(points.begin() + o, points.end(), [p](const Point& a, const Point& b) {
+            return p.slopeTo(a) < p.slopeTo(b);
+        });
+
+        // kolla om 3 punkter
+        for (int i = o + 1; i < N - 2; ++i) {
+            if (p.slopeTo(points[i]) == p.slopeTo(points[i + 2])) {
+                window->draw_line(p, points[i + 2]);
+            }
+        }
+    }
+
 
     auto end = chrono::high_resolution_clock::now();
     cout << "Computing line segments took "

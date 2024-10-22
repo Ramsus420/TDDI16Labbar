@@ -78,6 +78,20 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
  * Hitta den längsta kortaste ordkedjan som slutar i 'word' i ordlistan 'dict'. Returvärdet är den
  * ordkedja som hittats. Det sista elementet ska vara 'word'.
  */
+
+bool differs_by_one_letter(const string &a, const string &b) {
+    int count = 0;
+    for (size_t i = 0; i < a.size(); i++) {
+        if (a[i] != b[i]) {
+            count++;
+        }
+        if (count > 1) {
+            return false;
+        }
+    }
+    return true;
+}
+
 vector<string> find_longest(const Dictionary &dict, const string &word) {
      if (dict.find(word) == dict.end()) {
         return {};
@@ -87,6 +101,7 @@ vector<string> find_longest(const Dictionary &dict, const string &word) {
     std::queue<string> q;
     q.push(word);
     visited[word] = 1;
+    
     while (!q.empty()){
         string current = q.front();
         q.pop();
@@ -95,7 +110,7 @@ vector<string> find_longest(const Dictionary &dict, const string &word) {
             if (visited.find(neighbours[i]) == visited.end()){
                 visited[neighbours[i]] = visited[current] + 1;
                 q.push(neighbours[i]);
-                if (visited[neighbours[i]] > result.size()){
+                if (visited[neighbours[i]] > result.size() || differs_by_one_letter(neighbours[i], result.back())){
                     result.push_back(neighbours[i]);
                 }
             }
