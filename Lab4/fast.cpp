@@ -19,7 +19,7 @@ int main(int argc, const char* argv[]) {
         return 1;
 
     // The array of points
-    vector<Point> points;
+    vector<Point> input_points;
 
     // Read tolerance from cin
     double tolerance{};
@@ -32,34 +32,47 @@ int main(int argc, const char* argv[]) {
     for (int i{0}; i < N; ++i) {
         double x{}, y{};
         cin >> x >> y;
-        points.push_back(Point{x, y});
+        input_points.push_back(Point{x, y});
     }
 
     // draw points to screen all at once
-    window->draw_points(points);
-
-    // Sort points by their natural order. Makes finding endpoints a bit easier.
-   // sort(points.begin(), points.end());
+    window->draw_points(input_points);
 
     auto begin = chrono::high_resolution_clock::now();
 
-    sort(points.begin(), points.end());
+    std::vector<Point> points = input_points;
 
     // Iterate through all possible origins:
     for (int o{0}; o < N; ++o) {
         // Select a point p from the set of all points
-        Point p = points[o];
+        Point p = input_points[o];
+        vector<Point> result{p};
 
-        //sortera resten av punkterna efter lutning
-        sort(points.begin() + o, points.end(), [p](const Point& a, const Point& b) {
+        //antar nlogn tid
+        sort(points.begin(), points.end(), [p](const Point& a, const Point& b) {
             return p.slopeTo(a) < p.slopeTo(b);
         });
 
-        // kolla om 3 punkter
-        for (int i = o + 1; i < N - 2; ++i) {
-            if (p.slopeTo(points[i]) == p.slopeTo(points[i + 2])) {
-                window->draw_line(p, points[i + 2]);
+        for(int j = 1; j < N-2; j++)
+        {
+            if(p.sameSlope(points[j], points[j+2], tolerance))
+            {
+                result.push_back(points[j]);
+                result.push_back(points[j + 1]);
+                result.push_back(points[j + 2]);
             }
+            else
+            {
+                if(result.size() > 3)
+                {
+                    window->draw_line(result);
+                }
+                result.clear();
+                result.push_back(p);
+            }
+        }
+        if(result.size() >= 3){
+            window->draw_line(result);
         }
     }
 

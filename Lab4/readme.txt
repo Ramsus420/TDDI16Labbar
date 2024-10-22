@@ -10,9 +10,9 @@ Mönsterigenkänning
   Matchar brute-lösningen sitt värstafall i praktiken, eller har den ett
   medelfall som är bättre?
 
-brute:
+brute: värsta O(N⁴) om många linjer
 
-fast:
+fast: O(N²logn) för alla
 
 
 - Fyll i tabellen nedan med riktiga körtider i sekunder när det känns
@@ -22,14 +22,14 @@ fast:
     
       N       brute       sortering
  ----------------------------------
-    150
-    200
-    300
-    400
-    800
-   1600
-   3200
-   6400
+    150 42
+    200 100
+    300 300
+    400 701
+    800 5616
+   1600 46307
+   3200 383728
+   6400 
   12800
 
 
