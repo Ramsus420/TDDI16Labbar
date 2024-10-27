@@ -22,15 +22,15 @@ fast: O(N²logn) för alla
     
       N       brute       sortering
  ----------------------------------
-    150 42
-    200 100
-    300 300
-    400 701
-    800 5616
-   1600 46307
-   3200 383728
-   6400 
-  12800
+    150       0,042       0,014
+    200       0,100       0,032
+    300       0,300       0,069
+    400       0,701       0,109
+    800       5,616       0,377
+   1600       46,307      1,590
+   3200       383,728     6,712
+   6400       6139,648    28,807
+  12800       98234,368   128,142
 
 
 - Energianvändning
@@ -71,9 +71,8 @@ fast: O(N²logn) för alla
   också drar ström i "idle".)
 
 
-Förbrukning av brute på ett år: ? kWh
+Förbrukning av brute på ett år: 668 kWh
 
-Förbrukning av sotering på ett år: ? kWh
+Förbrukning av sotering på ett år: 73 kWh
 
-Skillnad: ? kWh
-
+Skillnad: 595 kWh
