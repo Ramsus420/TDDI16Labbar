@@ -79,44 +79,49 @@ vector<string> find_shortest(const Dictionary &dict, const string &from, const s
  * ordkedja som hittats. Det sista elementet ska vara 'word'.
  */
 
-bool differs_by_one_letter(const string &a, const string &b) {
-    int count = 0;
-    for (size_t i = 0; i < a.size(); i++) {
-        if (a[i] != b[i]) {
-            count++;
-        }
-        if (count > 1) {
-            return false;
-        }
-    }
-    return true;
-}
-
 vector<string> find_longest(const Dictionary &dict, const string &word) {
-     if (dict.find(word) == dict.end()) {
+    if (dict.find(word) == dict.end()){
         return {};
     }
-    vector<string> result(1, word);
-    std::unordered_map<string, int> visited;
+
+    vector<string> result;
+    std::unordered_map<string, int> distance;
+    std::unordered_map<string, string> parent;
     std::queue<string> q;
-    q.push(word);
-    visited[word] = 1;
+
     
+    q.push(word);
+    distance[word] = 0;
     while (!q.empty()){
         string current = q.front();
         q.pop();
         vector<string> neighbours = find_neighbours(dict, current);
         for (size_t i = 0; i < neighbours.size(); i++){
-            if (visited.find(neighbours[i]) == visited.end()){
-                visited[neighbours[i]] = visited[current] + 1;
+            if (distance.find(neighbours[i]) == distance.end()){
+                distance[neighbours[i]] = distance[current] + 1;
+                parent[neighbours[i]] = current;
                 q.push(neighbours[i]);
-                if (visited[neighbours[i]] > result.size() || differs_by_one_letter(neighbours[i], result.back())){
-                    result.push_back(neighbours[i]);
-                }
             }
         }
     }
-    std::reverse(result.begin(), result.end());
+
+    //hitta ordet med längst avstånd
+    int max_distance = 0;
+    string max_word = word;
+    for (auto it = distance.begin(); it != distance.end(); it++){
+        if (it->second > max_distance){
+            max_distance = it->second;
+            max_word = it->first;
+        }
+    }
+
+    //skapa ordkedjan med max_word
+    string temp = max_word;
+    while (temp != word){
+        result.push_back(temp);
+        temp = parent[temp];
+    }
+    result.push_back(word);
 
     return result;
 }
