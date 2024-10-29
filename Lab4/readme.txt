@@ -11,6 +11,7 @@ Mönsterigenkänning
   medelfall som är bättre?
 
 brute: värsta O(N⁴) om många linjer
+      Medel: också O(N⁴) men något snabbare eftersom den ibland kan skippa en loop om den inte hittar linjer.
 
 fast: O(N²logn) för alla
 
@@ -70,6 +71,8 @@ fast: O(N²logn) för alla
   vi räknar på större delar av systemet, även om andra komponenter
   också drar ström i "idle".)
 
+
+BERÄKNINGAR SE CALC.PY
 
 Förbrukning av brute på ett år: 668 kWh
 
