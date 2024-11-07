@@ -39,10 +39,13 @@ def test_connectivity():
         assert result.returncode == 0
 
 def test_ip_forward_enable():
-    
+    result = subprocess.run("sysctl net.ipv4.ip_forward", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "net.ipv4.ip_forward = 1" in result.stdout.strip()
 
 def test_ip_masquerading():
-
+    #kanske funkar??
+    result = subprocess.run("iptables -t nat -L POSTROUTING -n", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "MASQUERADE" in result.stdout.strip()
 
 def test_firewall_rules():
     #testa ping till alla andra maskiner
@@ -55,11 +58,18 @@ if hostname != "gw" and hostname != "client-1" and hostname != "client-2" and ho
 else:
     print("Running tests for " + hostname)
     test_check_netmask()
+    print("Test check netmask passed")
     test_check_gateway()
+    print("Test check gateway passed")
     test_check_ip()
+    print("Test check ip passed")
     test_connectivity()
+    print("Test connectivity passed")
     if hostname == "gw":
         test_ip_forward_enable()
+        print("Test ip forward enable passed")
         test_ip_masquerading()
+        print("Test ip masquerading passed")
         test_firewall_rules()
+        print("Test firewall rules passed")
     print("All tests passed")
