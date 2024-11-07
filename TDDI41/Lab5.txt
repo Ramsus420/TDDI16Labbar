@@ -16,6 +16,7 @@
     ip route
 
 
+i /etc/network/interfaces
 router:
 address 10.0.0.1
 netmask 255.255.255.0
@@ -39,3 +40,13 @@ testa nc:
 på router nc -l -p 12345
 på annan nc 10.0.0.1 12345
 skrev hej och visades på andra maskinen
+
+i router enable ip forwarding
+i /etc/sysctl.conf
+avkommenterade net.ipv4.ip_forward=1
+sysctl -p
+
+i /etc/nftables.conf
+policy drop och lite specifica input accept för icmp och tcp för client och server
+och router för forward
+
