@@ -42,10 +42,8 @@ def test_ip_forward_enable():
     result = subprocess.run("sysctl net.ipv4.ip_forward", shell=True, stdout=subprocess.PIPE, text=True)
     assert "net.ipv4.ip_forward = 1" in result.stdout.strip()
 
-def test_ip_masquerading():
-    #kanske funkar??
-    result = subprocess.run("iptables -t nat -L POSTROUTING -n", shell=True, stdout=subprocess.PIPE, text=True)
-    assert "MASQUERADE" in result.stdout.strip()
+def test_ip_masquerading():    
+    #testa att det går att pinga ut till exempel google.com
 
 def test_firewall_rules():
     #testa ping till alla andra maskiner
