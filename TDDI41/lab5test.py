@@ -43,12 +43,60 @@ def test_ip_forward_enable():
     assert "net.ipv4.ip_forward = 1" in result.stdout.strip()
 
 def test_ip_masquerading():    
-    #testa att det går att pinga ut till exempel google.com
+    result = subprocess.run("ping -c 1 -w 1 google.com", shell=True, stdout=subprocess.PIPE, text=True)
+    assert result.returncode == 0
+
 
 def test_firewall_rules():
-    #testa ping till alla andra maskiner
-    #testa ssh trafik till alla andra maskiner på normala ssh porten
-    #testa att inte http trafik funkar till alla andra maskiner
+    result = subprocess.run("ping -c 1 -w 1 google.com", shell=True, stdout=subprocess.PIPE, text=True)
+    assert result.returncode == 0
+    if hostname == "gw":
+        #testa icmp trafik
+        result = subprocess.run("ping -c 1 -w 1 10.0.0.2", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+        result = subprocess.run("ping -c 1 -w 1 10.0.0.3", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+        result = subprocess.run("ping -c 1 -w 1 10.0.0.4", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+
+        #testa trafik på port 22
+        result = subprocess.run("scp -P 22 lab5test.py root@10.0.0.2", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+        result = subprocess.run("scp -P 22 lab5test.py root@10.0.0.3", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+        result = subprocess.run("scp -P 22 lab5test.py root@10.0.0.4", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+
+        #testa loopback
+        result = subprocess.run("ping -c 1 -w 1 127.0.0.1", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+
+        #testa policy drop på annan port
+        result = subprocess.run("nc -zv -w 1 10.0.0.2 1234", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode != 0
+        result = subprocess.run("nc -zv -w 1 10.0.0.3 1234", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode != 0
+        result = subprocess.run("nc -zv -w 1 10.0.0.4 1234", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode != 0
+
+    else:
+        #testa icmp trafik
+        result = subprocess.run("ping -c 1 -w 1 10.0.0.1", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+
+        #testa trafik på port 22
+        result = subprocess.run("scp -P 22 lab5test.py root@10.0.0.1", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+
+        #testa loopback
+        result = subprocess.run("ping -c 1 -w 1 127.0.0.1", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode == 0
+
+        #testa policy drop på annan port
+        result = subprocess.run("nc -zv -w 1 10.0.0.1 1234", shell=True, stdout=subprocess.PIPE, text=True)
+        assert result.returncode != 0
+
+
 
 if hostname != "gw" and hostname != "client-1" and hostname != "client-2" and hostname != "server":
     print("Unknown hostname")
@@ -63,11 +111,11 @@ else:
     print("Test check ip passed")
     test_connectivity()
     print("Test connectivity passed")
+    test_firewall_rules()
+    print("Test firewall rules passed")
     if hostname == "gw":
         test_ip_forward_enable()
         print("Test ip forward enable passed")
         test_ip_masquerading()
         print("Test ip masquerading passed")
-        test_firewall_rules()
-        print("Test firewall rules passed")
     print("All tests passed")
