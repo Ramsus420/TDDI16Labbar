@@ -23,8 +23,53 @@ webbadress (enligt din DNS-server)? Du kan vilja läsa om reverse DNS.
 
 
 
+
+
+
+Kör dig www.liu.se, vilket bör ge outputen:
+
+; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> www.liu.se
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64544
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.liu.se.			IN	A
+
+;; ANSWER SECTION:
+www.liu.se.		7882	IN	A	130.236.18.52
+
+;; Query time: 0 msec
+;; SERVER: 130.236.1.9#53(130.236.1.9)
+;; WHEN: Fri Oct 23 10:01:05 CEST 2020
+;; MSG SIZE  rcvd: 55
+
+
+Inlämning:
+
+    Förklara kortfattat vad de olika delarna av utskriften innebär.
+    När du gör en query som till exempel dig ANY liu.se @ns4.liu.se kan du få flera olika sorters resource records (RR) tillbaka. Vad ska A-, AAAA-, NS-, MX- och SOA-records innehålla?
+
+Inlämning: Kör dig +trace www.google.com och förklara kortfattat vad som står. 
+
+
+
+
+
+Innan ni sätter igång, besvara (och lämna in tillsamans med resten):
+
+    Hur sätter man önskad DNS-server på Linux
+    Vad är en SOA post? Vad innebär dess olika fält?
+
+
+
 Konfiguration av er namnserver
 
 I /etc/systemd/resolved.conf i server
     DNS=8.8.8.8   //googles
 
+todo:
+enable port 53 på alla se servers nftables
