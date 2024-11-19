@@ -68,8 +68,36 @@ Innan ni sätter igång, besvara (och lämna in tillsamans med resten):
 
 Konfiguration av er namnserver
 
-I /etc/systemd/resolved.conf i server
+I /etc/systemd/resolved.conf 
+    i server
     DNS=8.8.8.8   //googles
+    på resten
+    DNS=10.0.0.2 som är serverns ip
+I /etc/resolved.conf i client 1 och 2
+    kommenterade ut 10.0.2.3
+    la till namnserver 10.0.0.2
+i /etc/dhcp/dhclient.conf i gw
+    la till supersede domain-name-servers 10.0.0.2;
 
-todo:
-enable port 53 på alla se servers nftables
+I /etc/nftables.conf i server
+    tcp dport 53 accept
+    udp dport 53 accept
+
+enable bind9 på server
+systemctl enable bind9
+verifierade med systemctl status bind9 efter reboot
+
+configurerade zones filer och named.conf.local i /etc/bind/ på server
+se inlämnade filer
+
+i /etc/bind/named.conf.options i server
+La till åvanför options
+acl trustedclients{
+    localhost;
+    10.0.0.0/24;
+}
+i options
+    recursion yes;
+    allow-recursion { trustedclients; };
+    allow-query { trustedclients; };
+
