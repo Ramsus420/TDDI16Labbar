@@ -7,13 +7,15 @@
     en rekursiv namnserver
 
 3.Är det skillnad mellan en domän och en zon? Vilken skillnad isåfall?
-    
+    Ja. En domän är egentligen bara ett namn som är en del av DNS-hierarkin. En Zon definieras av den som skapar zonen och innehåller uppslag för alla enheter i zonen.
+    Domän - definierar ett område medan zon anger vem som är auktoritet och vilka enheter som finns i zonen. 
 
 4.Vad innebär rekursiv slagning? Iterativ? Hur vet DNS-servern du frågar om det är en rekursivt ställd fråga?
-
-
+    Rekursiv - Klienten frågar DNS-server om uppslag. Servern Tar sedan ansvar för att hitta adressen frågar sedan vidare tills en aktoritativ server ansvarig för den domänen nås. Den servern skickar adressen som söktes tillbaks hela vägen till klienten.
+    Iterativ - Här skickar Servern vidare frågan men tar inte själv ansvar för att lösa det.
+    I Header för DNS-paket finns en flagga som anger om rekursion är önskad.
 5.I DNS delegerar vi ansvaret för olika zoner. Varför?
-
+    Det finns flera fördelar med att fördela ansvaret. Bättre skalbarhet, decentralisering (mindre känsligt för lokala driftstörningar), mer effektivt när en mindre lokal server kan svara på en query istället för att hela tiden behöva gå till root.
 
 6.Ovan beskriver vi hur man kommer fram till att liu.se har adressen 130.236.18.52 
 (och hela delegerings-hierarkin från root till auktoriteten för .se-domänen, till liu.se). 
@@ -51,10 +53,18 @@ www.liu.se.		7882	IN	A	130.236.18.52
 Inlämning:
 
     Förklara kortfattat vad de olika delarna av utskriften innebär.
+    Got answer - kontakten var lyckad.
+    flags: flaggor som beskriver olika inställningar, t.ex. RD = Recursion Desired
+    EDNS: Anger att extended DNS används och udp: 4096 - att servern stödjer udp-paket uppp till 4096
+    Question section. Vad som efterfrågades. IN - Internet, A = IPv4
+
+    Answer: detaljer om svaret. 7782 = hur länge adressen kan cache:as typ A = ipv4 och IP-adressen
+
     När du gör en query som till exempel dig ANY liu.se @ns4.liu.se kan du få flera olika sorters resource records (RR) tillbaka. Vad ska A-, AAAA-, NS-, MX- och SOA-records innehålla?
+        Namn, TTL, Klass, Data 
 
 Inlämning: Kör dig +trace www.google.com och förklara kortfattat vad som står. 
-
+    Kommandit visar kedjan av DNS-servrar uppslagningen tagit för att hitta adressen www.google.com
 
 
 
@@ -62,8 +72,14 @@ Inlämning: Kör dig +trace www.google.com och förklara kortfattat vad som stå
 Innan ni sätter igång, besvara (och lämna in tillsamans med resten):
 
     Hur sätter man önskad DNS-server på Linux
+	    Man sätter önskad DNS-server i /etc/resolved.conf
     Vad är en SOA post? Vad innebär dess olika fält?
-
+	    Start of Authority. Berättar vad Zonen heter, mailadressen till ansvarig. 
+        Här finns även:
+        Serial - serienummer som skall uppdateras varje gång filen uppdateras
+        Refresh - anger hur ofta sekundära servrar ska kontrollera om servens named.conf.local uppdateras. 
+        Retry - Hur länge sekundära dns-servrar ska vänta innan de försöker ansluta igen.
+        Expire -  efter hur lång tid de sekundära servrarna  ser den primära som inaktuell (om de inte kan få kontakt). 
 
 
 Konfiguration av er namnserver
