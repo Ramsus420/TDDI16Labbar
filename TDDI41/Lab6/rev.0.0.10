@@ -1,0 +1,15 @@
+$TTL 1h
+@   IN  SOA  rasmus.rikard.com. rikve916.student.liu.se. (
+        202411221; SERIAL
+        2h        ; Refresh
+        1h        ; Retry
+        1w        ; Expire
+        1h        ) ; Minimum
+
+@   IN  NS   rasmus.rikard.com.
+
+
+1   IN  PTR  gw.rasmus.rikard.com.      ; 10.0.0.1
+2   IN  PTR  rasmus.rikard.com.         ; 10.0.0.2
+3   IN  PTR  client-1.rasmus.rikard.com. ; 10.0.0.3
+4   IN  PTR  client-2.rasmus.rikard.com. ; 10.0.0.4

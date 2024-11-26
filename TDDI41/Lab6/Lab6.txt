@@ -1,4 +1,4 @@
-
+1.
 1.Vad är en auktoritativ namnserver?
     Den servern som har det faktiska ip-adresskatalogen som är kopplat till ett domännamn.
     Det är den som innehåller den slutliga informationen om DNS förfrågan.
@@ -60,7 +60,8 @@ Inlämning:
 
     Answer: detaljer om svaret. 7782 = hur länge adressen kan cache:as typ A = ipv4 och IP-adressen
 
-    När du gör en query som till exempel dig ANY liu.se @ns4.liu.se kan du få flera olika sorters resource records (RR) tillbaka. Vad ska A-, AAAA-, NS-, MX- och SOA-records innehålla?
+    När du gör en query som till exempel dig ANY liu.se @ns4.liu.se kan du få flera olika sorters resource records (RR) tillbaka. 
+    Vad ska A-, AAAA-, NS-, MX- och SOA-records innehålla?
         Namn, TTL, Klass, Data 
 
 Inlämning: Kör dig +trace www.google.com och förklara kortfattat vad som står. 
@@ -68,7 +69,7 @@ Inlämning: Kör dig +trace www.google.com och förklara kortfattat vad som stå
 
 
 
-
+2.
 Innan ni sätter igång, besvara (och lämna in tillsamans med resten):
 
     Hur sätter man önskad DNS-server på Linux
@@ -88,7 +89,7 @@ I /etc/systemd/resolved.conf
     i server
     DNS=8.8.8.8   //googles
     på resten
-    DNS=10.0.0.2 som är serverns ip
+    DNS=10.0.0.2 //som är serverns ip
 I /etc/resolved.conf i client 1 och 2
     kommenterade ut 10.0.2.3
     la till namnserver 10.0.0.2
@@ -112,8 +113,23 @@ acl trustedclients{
     localhost;
     10.0.0.0/24;
 }
-i options
+i options delen
     recursion yes;
     allow-recursion { trustedclients; };
     allow-query { trustedclients; };
 
+
+
+5.
+    Nu har ni kallat er zon för gruppnamn.example.com. Finns det något i DNS-protokollet som hindrar att ni istället sade att ni var google och hade alla deras domäner?
+    I någon utökning av protokollet? 
+        Nej. DNS i sig är bara uppslag och har inga inbyggda funktioner som skulle genomskåda bluffen. Däremot finns det ett tillägg DNSSEC som autentiserar DNS-svar från servrar.
+    Om ni satte upp en falsk tjänst och pekade adressen gmail.com till den via er DNS-server, 
+    är det något i DNS eller annat protokoll som skulle hjälpa en användare som använder er DNS-server att upptäcka bluffen?
+        Ja man kan använda DNSSEC, alternativt använda dig och se att det inte är 8.8.8.8 som används för uppslag.
+    
+
+    Nu har ni skrivit zonfiler. Om ni skulle delegera auktoritet för users.gruppnamn.example.com hade ni behövt lägga till några rader i er zon-fil. 
+    Vilka, och varför? (Ni kan fundera på delegering av delar av reverse-zon, men utöver att lösningen blir ful, är det inte obligatoriskt.)
+        Man måste lägga till två rader per delegering. En som anger vad en "child zone" heter och ansvarig dns server för child zonen t.ex. "print.rasmus.rikard.com. IN NS ns1.print.rasmus.rikard.com."
+        Den andra raden är ett uppslag för servern som är ansvarig. t.ex. "ns1.print.rasmus.rikard.com. A 10.0.0.5"

@@ -28,6 +28,8 @@ def test_named_bind9_config():
 
 #testa brandvägg med grep
 def test_firewall():
+    result = subprocess.run("systemctl status nftables | grep active", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "active (exited)" in result.stdout.strip()#exited för att det inte är en service som körs kontinuerligt
     result = subprocess.run("cat /etc/nftables.conf | grep tcp", shell=True, stdout=subprocess.PIPE, text=True)
     assert "tcp dport 53 accept" in result.stdout.strip()
     result = subprocess.run("cat /etc/nftables.conf | grep udp", shell=True, stdout=subprocess.PIPE, text=True)
