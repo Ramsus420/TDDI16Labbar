@@ -1,0 +1,9 @@
+TODO:
+
+Får "invalid credentials" när vi kör ldapscript (/var/logs/ldapscripts) eller ldapsearch med "ldapsearch -x -W -D cn=admin,dc=rasmus,dc=rikard,dc=com -b dc=rasmus,dc=rikard,dc=com
+Lyckades skapa en user med ldapadd -x -D cn=admin,dc=rasmus,dc=rikard,dc=com -W -f base.ldif (den ligger i / )
+Har vi fel adminlösen? isf, hur rättar vi till det? Var finns admin? ligger direkt undet DN ?
+
+
+Varför kan vi inte skapa user med ldapscript? --> kanske mer konfig för ldapscripts
+skapa en användare localt med ldapscripts
