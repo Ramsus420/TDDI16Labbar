@@ -1,9 +1,80 @@
+
+
+Server:
+Installera paketen slapd och ldap-utils.
+    apt install slapd och ldap-utils
+Konfigurera er LDAP-katalog med det "Base DN" ni vill ha.
+    Base DN satte vi till rasmus.rikard.com (samma som DNS zonen)
+    (dc=rasmus,dc=rikard,dc=com)
+
+Klient 1 och 2:
+
+Installera paketen libnss-ldapd, libpam-ldapd, ldap-utils.
+    apt install libnss-ldapd och libpam-ldapd och ldap-utils
+Verifiera att ni kan nå er LDAP server genom exempelvis kommandot ldapsearch
+    ldapsearch -x -LLL -H ldap://10.0.0.2 -b dc=rasmus,dc=rikard,dc=com 
+
+
+
+
+
+Server:
+Skapa en organizational unit för era användare med hjälp av .ldif-fil.
+    i base.ldif:
+        dn: ou=users,dc=rasmus,dc=rikard,dc=com
+        objectClass: organizationalUnit
+        ou: users
+    la till den med: ldapadd -x -D cn=admin,dc=rasmus,dc=rikard,dc=com -W -f base.ldif
+
+Lägg till en användare med hjälp av .ldif-fil. Använd objektklass posixAccount tillsammans med någon relevant structural objectklass.
+    i base.ldif:
+        dn: uid=rikard,ou=users,dc=rasmus,dc=rikard,dc=com
+        objectClass: top
+        objectClass: person
+        objectClass: posixAccount
+        uid: rikard
+        loginShell: /bin/bash
+        homeDirectory: /home/rikard
+        userPassword: password
+        uidNumber: 1000
+        gidNumber: 1000
+        sn: hej
+        cn: rikkkard
+    la till den med: ldapadd -x -D cn=admin,dc=rasmus,dc=rikard,dc=com -W -f base.ldif
+
+Verifiera att du kan hitta användaren med ldapsearch
+    ldapsearch -x -LLL -H ldap://localhost -b dc=rasmus,dc=rikard,dc=com 
+
+på klient 1 och 2:
+Verifiera att ni kan hitta den nya användaren genom kommandot getent (Förutsätter att /etc/nsswitch.conf är korrekt konfigurerad).
+    getent passwd rikard
+Logga in som användaren.
+    loggade ut och loggade in med använare rikard och lösen och det fungerade
+
+
+
+
+Installera och konfigurera ldapscripts.
+Skapa en användare lokalt
+Lägg till användaren i LDAP-katalogen och sätt användarens lösenord med hjälp av ldapscripts
+    se ldapscripts.conf för konfig
+    la till användare med ldapadduser NAME users
+    ändrade lösen för användaren med ldapsetpasswd NAME
+
+    gick att logga in på användaren på klienterna
+
+
+    vi addade lokala usern erik på servern och loggade in med lösenordet vi valde.
+    Testade sedan att lägga till en ldapuser erik med ett annat lösenord. På servern kan vi endast logga in med det "lokala" lösenordet, inte ldap. På klienterna kan vi däremot logga in med LDAP-lösenordet
+    Slutsat: Om det finn ett lokalt konto så kommer det att gälla över LDAP. Båda konton gäller inte samtidigt.
+    Notering: Fastän vi valt att skapa homedir för användare i ldapscript.conf (och pathen för Homedir för varje user är korrekt) så skapas ingen mapp lokalt på klienterna => users hamnar i / istället för /home/NAMN . Problem?
+
+
+
+Modifiera ert användarskript så att användarna också läggs till i LDAP-katalogen.
+    se lab7generate_accounts.py
+
+
 TODO:
-
-Får "invalid credentials" när vi kör ldapscript (/var/logs/ldapscripts) eller ldapsearch med "ldapsearch -x -W -D cn=admin,dc=rasmus,dc=rikard,dc=com -b dc=rasmus,dc=rikard,dc=com
-Lyckades skapa en user med ldapadd -x -D cn=admin,dc=rasmus,dc=rikard,dc=com -W -f base.ldif (den ligger i / )
-Har vi fel adminlösen? isf, hur rättar vi till det? Var finns admin? ligger direkt undet DN ?
-
-
-Varför kan vi inte skapa user med ldapscript? --> kanske mer konfig för ldapscripts
-skapa en användare localt med ldapscripts
+Skriva om generate_accounts-scriptet så att det lägger till i LDAP istället för lokalt.
+tester.
