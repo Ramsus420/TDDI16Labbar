@@ -1,5 +1,22 @@
 
 
+Vad betyder DIT och hur fungerar det?
+
+Vad betyder förkortningarna dn och dc och hur används de?
+	DC - Domain Component. Bas-mappen för hierarkin. liknande roten i ett filsystem men inte ekvivalent.
+	DN - Distinguished name är en "full sökväg" genom en DIT till en specifik nod. Används t.ex. om man vill kolla logininfo för en specifik användare.
+Vad är ett attribute?
+	En egenskap hos ett objekt. t.ex. användarnamn eller en behörighet eller grupptillhörighet
+Vad är en "object class"?
+	Definierar hur ett objekt ser ut. d.v.s. vilka attribut det har.
+Vad är det för skillnad mellan en "structural-" och en "auxiliary object class?
+	Structural - Används för att skapa ett objekt. Alltså ett objekt är alltid baserat på en OCH ENDAST EN Structural object class.
+	Auxiliary - kan ses som "tillägg" till existerande objekt. Man har alltså ett objekt skapat med en static object class och kan 
+    applicera 0 eller flera auxiliary object classes.Lägg till en användare med hjälp av .ldif-fil. Använd objektklass posixAccount tillsammans 
+    med någon relevant structural objectklass.
+
+
+
 Server:
 Installera paketen slapd och ldap-utils.
     apt install slapd och ldap-utils
@@ -47,6 +64,7 @@ Verifiera att du kan hitta användaren med ldapsearch
 
 på klient 1 och 2:
 Verifiera att ni kan hitta den nya användaren genom kommandot getent (Förutsätter att /etc/nsswitch.conf är korrekt konfigurerad).
+    la till ldap på passwd i nsswitch.conf
     getent passwd rikard
 Logga in som användaren.
     loggade ut och loggade in med använare rikard och lösen och det fungerade
@@ -76,5 +94,4 @@ Modifiera ert användarskript så att användarna också läggs till i LDAP-kata
 
 
 TODO:
-Skriva om generate_accounts-scriptet så att det lägger till i LDAP istället för lokalt.
-tester.
+skriv om add account script så den lägger till användare lokalt också med samma uid på både ldap och lokalt
