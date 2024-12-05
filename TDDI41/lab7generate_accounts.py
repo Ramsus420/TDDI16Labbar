@@ -26,11 +26,22 @@ def generate_username(name):
 
 def create_user(username):
     subprocess.run(["ldapadduser", username, "users"])
+    #get uid from ldapusern
+    uid = subprocess.run(["id", "-u", username], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+    #create local user with same uid
+    subprocess.run(["useradd", "-u", str(uid), username])
 
 
 def set_password(username, password):
-    #Command to change the user's password
+    #Command to change the ldap user's password
     cmd = ['ldapsetpasswd', username]
+    # Running the command and communicating with it
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Sending the password to the command through stdin with pipe
+    proc.communicate(input=f'{password}\n{password}\n'.encode('utf-8'))
+
+    #Command to change the local user's password
+    cmd = ['passwd', username]
     # Running the command and communicating with it
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Sending the password to the command through stdin with pipe
