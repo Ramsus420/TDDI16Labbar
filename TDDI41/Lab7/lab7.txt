@@ -91,7 +91,3 @@ Lägg till användaren i LDAP-katalogen och sätt användarens lösenord med hj�
 
 Modifiera ert användarskript så att användarna också läggs till i LDAP-katalogen.
     se lab7generate_accounts.py
-
-
-TODO:
-skriv om add account script så den lägger till användare lokalt också med samma uid på både ldap och lokalt

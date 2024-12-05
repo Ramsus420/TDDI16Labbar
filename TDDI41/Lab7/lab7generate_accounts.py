@@ -25,11 +25,12 @@ def generate_username(name):
 
 
 def create_user(username):
-    subprocess.run(["ldapadduser", username, "users"])
+    subprocess.run(["useradd", username])
     #get uid from ldapusern
     uid = subprocess.run(["id", "-u", username], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
     #create local user with same uid
-    subprocess.run(["useradd", "-u", str(uid), username])
+    subprocess.run(["ldapadduser", username, "users", str(uid)])
+
 
 
 def set_password(username, password):
@@ -64,7 +65,9 @@ def main(filename):
             continue
         username = generate_username(name)
         generated_usernames.append(username)
-        password = generate_password()
+        #password = generate_password() algc384
+        #vi ändra att password blir username för enkelhetens skull annars är ovan bättre
+        password = username
         create_user(username)
         set_password(username, password)
         print(f"User {username} created with password {password}")
