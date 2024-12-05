@@ -1,0 +1,71 @@
+ Inlämning: Beskriv kortfattat (och i era egna ord)
+
+    Varför NTP är stratifierat (har strata, som på engelska heter stratum)? Varför talar man inte bara direkt med någon referensserver?
+        Stratum, eller Strata anger hur bra en källa återger korrekt tid samt rangordnar tillgängliga servrar man kan synka tiden mot. Detta skapar ett hierarkiskt träd där en server i nivån ovanför ALLTID är mer pålitlig än en server i samma nivå eller under.
+        Med hjälp av denna hierarki vet man vilken/vilka NTP servrar man kan ha som backup om det bästa, närliggande alternativet går ner. OM alla maskiner i världen behövde synka mot en Strata0 server skulle det inte vara skalbart men med en hierarky som alltid hämtar pålitlig tidsinformation uppifrån så kan en maskin "längre ned" i trädet få en "tillräckligt bra" tidsreferens. På detta sätt undviks flaskhalsar.
+     
+
+    En NTP-klient brukar inte bara ändra systemklockan till en viss tid direkt, utan ökar/minskar
+    hastigheten så att man når målet lite mjukare. Varför?
+        Det ökar stabiliteten i systemet. Om man gör för stora hopp skulle det t.ex. kunna leda till att man gör skrivning till en fil, ändrar tillbaks klockan och sedan ändrar filen igen.Då skulle den näst senaste uppdateringen vara den senaste eftersom vi råkade "hoppa förbi" tiden då den skrevs.
+        Samma resonemang kan appliceras på andra tjänster/funktioner som behöver synka. Gradvis ändring => mindre risk för problem.
+
+    Installera paketet ntp på er router. Kör ntpq -p och förklara vad de olika kolumnerna betyder, och hur man ska tolka att det finns flera
+    rader i tabellen. Ta med utdata från kommandot.
+        tally code - Det första tecknet anger status för NTP-servern * markerar servern vi synkar mot, + bästa alternativet om * går ner. -mindre bra alternativ, # tänkbara alternativ om * eller + går ner. blanksteg innebär att servern inte ännu utvärderats som tänkbart alternativ.
+        remote - Namn på servern
+        refid - Var servern hämtar sin tidsinformation ifrån (ovanför i hierarkin)
+        st - Stratum level - anger hur bra tidsåtergivningen är. 0 bäst, 16 sämst
+        t - typ - kan vara Unicast, Broadcast, Multicast, Local, peer
+        when - hur länge det gått sedan vi synkade mot servern
+        poll - hur ofta vi synkar mot servern
+        reach - Anger hur många av de senaste 8 synkningarna som gått igenom. 377 = Alla, 0 = ingen
+        delay - tur-retur tid till servern (alltså hur lång tid det tar att kommunicera och få svar)
+        offset - hur mycket vår lokala tid diffar mot servern
+        jitter - Variation i delay på skickade paket. Lågt värde = Mer stabil koppling
+
+        Varje rad i tabellen motsvarar en NTP server som vi skulle kunna synka mot.
+
+             remote           refid      st t when poll reach   delay   offset  jitter
+        ==============================================================================
+         0.debian.pool.n .POOL.          16 p    -   64    0    0.000   +0.000   0.000
+         1.debian.pool.n .POOL.          16 p    -   64    0    0.000   +0.000   0.000
+         2.debian.pool.n .POOL.          16 p    -   64    0    0.000   +0.000   0.000
+         3.debian.pool.n .POOL.          16 p    -   64    0    0.000   +0.000   0.000
+        -150.241.82.187  194.58.200.20    2 u  195  256  377   10.970   +2.564   0.302
+        +sth2.ntp.netnod .PPS.            1 u  201  256  377    3.973   +2.972   0.650
+        -sth1.ntp.netnod .PPS.            1 u   25  256  377    3.781   +2.680   0.196
+        -gbg2.ntp.netnod .PPS.            1 u   11  256  377    4.406   +3.213   0.545
+        #svl2.ntp.netnod .PPS.            1 u  253  256  377    8.681   +2.442   1.202
+        #192.36.143.134  .PPS.            1 u  257  256  377    4.084   +2.408   0.201
+        -ntp2.flashdance 193.11.166.52    2 u  267  256  377    4.139   +3.216   0.868
+        *fnet-ntp1.fy.ch .GPS.            1 u   26   64  377    4.803   +2.839   0.235
+        +ntp.netnod.se   .PPS.            1 u    7  256  377   14.735   +2.993   0.527
+        -ntp1.flashdance 194.58.202.20    2 u    4  256  377    4.610   +3.001   0.294
+        -mmo2.ntp.netnod .PPS.            1 u   14  256  377    6.284   +3.105   0.391
+        #109.120.135.172 192.36.143.130   2 u  252  256  377   11.050   +2.525   0.232
+        +sth4.ntp.netnod .PPS.            1 u  249  256  377    4.609   +2.777   0.183
+        #h-98-128-175-45 194.58.203.197   2 u  248  256  377   11.903   +2.537   0.147
+
+
+Vad vi gjort:
+
+På Gateway:
+    Installerat NTP och enable:at servicen.
+    öppna port 123 för udp
+    ändrat i /etc/ntp.conf och lagt till server se.pool.ntp.org iburst prefer (iburst = skicka många paket när tjänsten startar för snabbare synk, prefer = föredra över likvärdiga NTP-servrar)
+    Försökte ställa in så att vi broadcastade till klienterna men fick det inte att fungera så vi lyssnar på port 123 och klienterna får explicit hämta tidsinställning från servern
+    kommenterade bort alla pool entries
+
+På klienter och server:
+    Installerat NTP och enable:at servicen.
+    öppna port 123 för udp
+    ändrat i /etc/ntp.conf och lagt till server 10.0.0.1 iburst prefer
+    kommenterade bort alla pool entries
+
+
+Kontroll: kör nptq -p och se att vår NPT-server är vald.
+
+
+TODO:
+skriva tester
