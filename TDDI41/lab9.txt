@@ -1,0 +1,96 @@
+Vad är syftet med /etc/fstab?
+    fstab är förkortning för file system table och håller koll på alla enheter som monteras automatiskt.    
+Vad används kommandot mke2fs (mkfs.ext{2..4}) till?
+    att skapa en ny partition med filsystem ext2, ext3 eller ext4
+Vad skriver kommandot df -h ut?
+    Listar alla monterade enheter och vilken mount point de har monterats till
+Förklara vad kommandot mount -t ext3 /dev/sdb2 /mnt/media innebär
+    mount:ar partition på enhet sdb2 till mountpunkten /mnt/media
+
+
+
+
+Vad står förkortningen RAID för?
+    Redunant array of independent disks
+
+Förklara i grova drag hur RAID-0 fungerar
+    Delar upp all data i "stripes" som skrivs till olika diskar i arrayen => snabbare skrivning och läsning
+
+Förklara i grova drag hur RAID-1 fungerar
+    Spegling av data till alla diskar i arrayen
+Vad innebär kommandot mdadm --stop /dev/md0 ?
+    stoppa array md0 (den virutella arrayen)
+
+
+
+
+Installera mdadm
+    apt install mdadm
+Skapa RAID-1 arrayen /dev/md0 av diskarna /dev/vda och /dev/vdb
+    mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/vda /dev/vdb
+Skapa ett ext4 filsystem på /dev/md0
+    mkfs.ext4 /dev/md0
+Montera /dev/md0 under /mnt och verifiera storleken på disken
+    mount /dev/md0 /mnt
+    df -h gav storlek på 988M
+Avmontera /dev/md0
+    umount /mnt
+Skapa RAID-0 arrayen /dev/md1 av diskarna /dev/vdc och /dev/vdd
+    mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/vdc /dev/vdd
+Skapa ett ext4 filsystem på /dev/md1
+    mkfs.ext4 /dev/md1
+Montera /dev/md1 under /mnt och verifiera storleken på disken
+    mount /dev/md1 /mnt
+    df -h gav 2.0G
+Avmontera /dev/md1
+    umount /mnt
+
+
+
+
+Förklara följande begrepp: fysisk volym (PV: Physical Volume), volymgrupp (VG: Volume Group) och logisk volym (LV: Logical Volume) och hur de hänger ihop
+    Den fysiska volymen är den fysiska volyment på hårddisken i byte. 
+    En volymgrupp är en pool av en eller flera fysiska volymer. som en stor virtuell hårddisk (utan partitioner)
+    Logisk volym - en "partition" inom en Volume Group.
+Vad är kommandot för att göra klart en fysisk volym för lvm?
+    pvcreate PATH
+Vad är kommandot för att skapa en volymgrupp?
+    vgcreate NAME PATH
+Vad är kommandot för att utöka en volymgrupp med ytterligare en PV?
+    vgextend GROUPNAME PATH
+Hur skapar du en logisk volym på 100MB från en volymgrupp?
+    lvcreate -n NAME -L 100m GROUPNAME
+
+
+
+
+
+Installera lvm2
+    apt install lvm2
+Initiera/förbered /dev/md0 och /dev/md1 för anvädning i LVM. (detta kommer ta bort filsystemet du skapade på dom)
+    pvcreate /dev/md0
+    pvcreate /dev/md1
+Lägg till /dev/md0 till volymgruppen vgvirt
+    vgcreate vgvirt /dev/md0
+Utöka volymgruppen vgvirt med /dev/md1
+    vgextend vgvirt /dev/md1
+Skapa 2 logiska volymer lvvol1 och lvvol2
+    lvcreate -n lvvol1 -L 200m vgvirt
+    lvcreate -n lvvol2 -L 200m vgvirt
+Formatera dina nya logiska volymer med ett ext4 filsystem och se till att de monteras in vid boot under /home1 respektive /home2
+    mkfs.ext4 /dev/vgvirt/lvvol1
+    mkfs.ext4 /dev/vgvirt/lvvol2
+    skapa home 1 och 2 under /
+    
+    Testar att det funkar att montera med:
+    mount /dev/vgvirt/lvvol1 /home1
+    mount /dev/vgvirt/lvvol2 /home2
+
+    För att dessa ska monteras on boot måste vi lägga in dem i /etc/fstab
+    UUID=ff7a5f30-9d2b-41d9-ac8f-e286bb35956b /home1 ext4 defaults 0 2
+    UUID=b25076e0-bc48-4919-8f45-2a5180688aca /home2 ext4 defaults 0 2
+
+TODO:
+    få till det med mount i fstab
+    När vi la till som vi tyckte det borde vara enl. archwiki fick vi depency error. Provade fsck 0 och 2 men fick fel bägge gånger.
+    unable to mount /home1 och 2

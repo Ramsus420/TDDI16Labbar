@@ -56,16 +56,15 @@ På Gateway:
     ändrat i /etc/ntp.conf och lagt till server se.pool.ntp.org iburst prefer (iburst = skicka många paket när tjänsten startar för snabbare synk, prefer = föredra över likvärdiga NTP-servrar)
     Försökte ställa in så att vi broadcastade till klienterna men fick det inte att fungera så vi lyssnar på port 123 och klienterna får explicit hämta tidsinställning från servern
     kommenterade bort alla pool entries
+    nopeeer vad standard i configen
 
 På klienter och server:
     Installerat NTP och enable:at servicen.
     öppna port 123 för udp
     ändrat i /etc/ntp.conf och lagt till server 10.0.0.1 iburst prefer
     kommenterade bort alla pool entries
+    nopeeer vad standard i configen
 
 
-Kontroll: kör nptq -p och se att vår NPT-server är vald.
 
-
-TODO:
-skriva tester
+Kontroll: kör nptq -p och se att vår NPT-server är vald med *.
