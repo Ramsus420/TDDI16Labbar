@@ -4,7 +4,7 @@
     Det är den som innehåller den slutliga informationen om DNS förfrågan.
 
 2.Vad är alternativet till en auktoritativ namnserver
-    en rekursiv namnserver
+    Alternatiet är en rekursiv namnserver som ansvarar för att söka efter DNS-informationen genom att fråga andra namnserverar tills den hittar den auktoritativa namnservern.
 
 3.Är det skillnad mellan en domän och en zon? Vilken skillnad isåfall?
     Ja. En domän är egentligen bara ett namn som är en del av DNS-hierarkin. En Zon definieras av den som skapar zonen och innehåller uppslag för alla enheter i zonen.

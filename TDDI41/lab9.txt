@@ -86,11 +86,55 @@ Formatera dina nya logiska volymer med ett ext4 filsystem och se till att de mon
     mount /dev/vgvirt/lvvol1 /home1
     mount /dev/vgvirt/lvvol2 /home2
 
-    För att dessa ska monteras on boot måste vi lägga in dem i /etc/fstab
-    UUID=ff7a5f30-9d2b-41d9-ac8f-e286bb35956b /home1 ext4 defaults 0 2
-    UUID=b25076e0-bc48-4919-8f45-2a5180688aca /home2 ext4 defaults 0 2
+    hittar UUID med blkid
 
-TODO:
-    få till det med mount i fstab
-    När vi la till som vi tyckte det borde vara enl. archwiki fick vi depency error. Provade fsck 0 och 2 men fick fel bägge gånger.
-    unable to mount /home1 och 2
+    För att dessa ska monteras on boot måste vi lägga in dem i /etc/fstab
+    UUID=ff7a5f30-9d2b-41d9-ac8f-e286bb35956b /home1 ext4 errors=remount-ro 0 2
+    UUID=b25076e0-bc48-4919-8f45-2a5180688aca /home2 ext4 errors=remount-ro 0 2
+
+
+
+
+Konfigurera din server som en NFS-server (installera nödvändiga paket)
+    apt install nfs-kernel-server
+    systemctl enable nfs-kernel-server
+    öppnade port 2049 för tcp i nftables
+
+Konfigurera din server så att den exporterar /usr/local till alla era klienter
+    la till /usr/local 10.0.0.0/24(rw,sync,no_subtree_check) i /etc/exports
+    exportfs -a
+
+Konfigurera era klienter så att de statiskt monterar in /usr/local från er server vid uppstart. (Den lokala monteringspunkten behöver inte vara /usr/local)
+    apt install nfs-common
+    skapa en directory /mnt/nfs_local
+    la till i fstab 10.0.0.2:/usr/local /mnt/nfs_local nfs defaults 0 0
+
+
+
+
+
+Vad är en automount map?
+    En fil som innehåller instruktioner för hur/var filsystem ska monteras automatiskt 
+Vilket paket behöver du installera för att använda automount?
+    autofs
+Vad är det för skillnad på direkta och indirekta automount maps?
+    indirekta maps skapar mountpoints som undermappar i main mountpointen.
+    direkta maps skapar mountpoints på den pathen som finns i den relevanta map filen.
+Vad heter huvudkonfigurations-filen för automount? (Detta är inte samma sak som auto.master)
+    /etc/autofs.conf
+
+
+
+
+Skapa två nya test-användare, men flytta en användares hemkatalog till /home2/$USERNAME och den andra användarens hemkatalog till /home1/$USERNAME (du måste antagligen skapa katalogerna /home1 och /home2 först). Se till att inga hemkataloger finns kvar i /home. Ändra inte hemkatalogens plats i användardatabasen. När man frågar LDAP-databasen om var användarens hemkatalog ligger, ska det alltså stå /home/$USERNAME.
+
+Konfigurera din NFS-server för att uttryckligen exportera /home1 och /home2 med rätt behörigheter (läs/skriv-rättigheter, root_squash) till dina klienter (och endast dina klienter). Uttryckligen betyder att ni ska skriva ut det, även om det är default-värdet.
+
+Installera autofs på dina klienter och server.
+
+Konfigurera autofs så att den monterar /home/$USERNAME från användarens hemkatalog på NFS-servern. Om användaren mytestuser har en hemkatalog där filerna ligger under /home2/mytestuser på servern, ska den monteras under /home/mytestuser på klienten. Gör /home till en indirekt monteringspunkt - det vill säga att automounter automatiskt monterar underkataloger för /home, men inte /home själv. Du behöver antagligen en post i LDAP per användare. 
+
+Kontrollera att dina test-användare kan logga in och att deras hemkataloger monteras in korrekt
+
+Utöka ert skapa-användare-skript från Lab 7. LDAP så att användarens hemkatalog skapas i antigen /home1 eller /home2.
+Ett konto ska kunna skapas på servern, och sedan loggas in med från godtycklig klient där användarens hemkatalog ska nu monteras in vid inloggning. Detta kan kräva uppdatering av LDAP-katalogen med automount-information.
