@@ -4,11 +4,12 @@
     Det är den som innehåller den slutliga informationen om DNS förfrågan.
 
 2.Vad är alternativet till en auktoritativ namnserver
-    Alternatiet är en rekursiv namnserver som ansvarar för att söka efter DNS-informationen genom att fråga andra namnserverar tills den hittar den auktoritativa namnservern.
+    Alternatiet är en rekursiv namnserver som ansvarar för att söka efter DNS-informationen genom att fråga andra namnserverar tills den hittar den auktoritativa namnservern
+    och retunerar dens information man behöver.
+    Den kan också cacha informationen för snabbare framtida förfrågningar.
 
 3.Är det skillnad mellan en domän och en zon? Vilken skillnad isåfall?
-    Ja. En domän är egentligen bara ett namn som är en del av DNS-hierarkin. En Zon definieras av den som skapar zonen och innehåller uppslag för alla enheter i zonen.
-    Domän - definierar ett område medan zon anger vem som är auktoritet och vilka enheter som finns i zonen. 
+    Ja, en domän är ett unikt namn som är kopplat till en ip adress medans en zon är ett område i som hanterar en eller flera domäner eller subdomäner.
 
 4.Vad innebär rekursiv slagning? Iterativ? Hur vet DNS-servern du frågar om det är en rekursivt ställd fråga?
     Rekursiv - Klienten frågar DNS-server om uppslag. Servern Tar sedan ansvar för att hitta adressen frågar sedan vidare tills en aktoritativ server ansvarig för den domänen nås. Den servern skickar adressen som söktes tillbaks hela vägen till klienten.

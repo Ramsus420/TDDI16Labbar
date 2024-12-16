@@ -127,14 +127,50 @@ Vad heter huvudkonfigurations-filen för automount? (Detta är inte samma sak so
 
 
 Skapa två nya test-användare, men flytta en användares hemkatalog till /home2/$USERNAME och den andra användarens hemkatalog till /home1/$USERNAME (du måste antagligen skapa katalogerna /home1 och /home2 först). Se till att inga hemkataloger finns kvar i /home. Ändra inte hemkatalogens plats i användardatabasen. När man frågar LDAP-databasen om var användarens hemkatalog ligger, ska det alltså stå /home/$USERNAME.
+    använda vårat gamla script för att generera användarna. ändrade båda usernas home med t.ex usermod -d /home1/NAMN -m NAMN
+    tog bort dom gamla home katalogerna i /home med rm -r NAMN
+    gjorde ldapsearch och det stod att test usernas home var /home/NAME
+    dn: uid=test158,ou=users,dc=rasmus,dc=rikard,dc=com
+    objectClass: account
+    objectClass: posixAccount
+    cn: test158
+    uid: test158
+    uidNumber: 1005
+    gidNumber: 100
+    homeDirectory: /home/test158
+    loginShell: /bin/bash
+    gecos: test158
+    description: User account
+
+    dn: uid=test305,ou=users,dc=rasmus,dc=rikard,dc=com
+    objectClass: account
+    objectClass: posixAccount
+    cn: test305
+    uid: test305
+    uidNumber: 1006
+    gidNumber: 100
+    homeDirectory: /home/test305
+    loginShell: /bin/bash
+    gecos: test305
+    description: User account
 
 Konfigurera din NFS-server för att uttryckligen exportera /home1 och /home2 med rätt behörigheter (läs/skriv-rättigheter, root_squash) till dina klienter (och endast dina klienter). Uttryckligen betyder att ni ska skriva ut det, även om det är default-värdet.
-
+    la till /home1 10.0.0.3/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home2 10.0.0.3/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home1 10.0.0.4/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home2 10.0.0.4/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
 Installera autofs på dina klienter och server.
-
+    apt install autofs
 Konfigurera autofs så att den monterar /home/$USERNAME från användarens hemkatalog på NFS-servern. Om användaren mytestuser har en hemkatalog där filerna ligger under /home2/mytestuser på servern, ska den monteras under /home/mytestuser på klienten. Gör /home till en indirekt monteringspunkt - det vill säga att automounter automatiskt monterar underkataloger för /home, men inte /home själv. Du behöver antagligen en post i LDAP per användare. 
+    laddade ner ldif fil från https://launchpadlibrarian.net/55451730/autofs.ldif och la den i /etc/ldap/schema på servern
+    körde ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/autofs-ldap.ldif
 
 Kontrollera att dina test-användare kan logga in och att deras hemkataloger monteras in korrekt
 
 Utöka ert skapa-användare-skript från Lab 7. LDAP så att användarens hemkatalog skapas i antigen /home1 eller /home2.
 Ett konto ska kunna skapas på servern, och sedan loggas in med från godtycklig klient där användarens hemkatalog ska nu monteras in vid inloggning. Detta kan kräva uppdatering av LDAP-katalogen med automount-information.
+
+
+TODO:
+skapa ldif fil lägg till från https://help.ubuntu.com/community/AutofsLDAP automount till fram till och med "lionel" och modda för våran ldap
+Kolla sedan på infon i "Lionel" och anpassa till våra testanvändare.
