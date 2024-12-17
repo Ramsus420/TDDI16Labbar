@@ -172,6 +172,9 @@ Konfigurera autofs så att den monterar /home/$USERNAME från användarens hemka
     entry_attribute = cn
     value_attribute= automountInformation
     
+    la till /home /etc/auto.home i auto.master
+    la till * -fstype=nfs,rw 10.0.0.2:/home1/& 10.0.0.2:/home2/& i auto.home
+
     laddade ner ldif fil från https://launchpadlibrarian.net/55451730/autofs.ldif och la den i /etc/ldap/schema på servern
     körde ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/autofs-ldap.ldif
 
@@ -202,11 +205,11 @@ Konfigurera autofs så att den monterar /home/$USERNAME från användarens hemka
     objectClass: top
     objectClass: automountMap
 
-    dn: cn=lionel,ou=auto.home,ou=automount,ou=admin,dc=example,dc=com
-    cn: lionel
+    dn: cn=NAME,ou=auto.home,ou=automount,ou=admin,dc=example,dc=com
+    cn: NAME
     objectClass: top
     objectClass: automount
-    automountInformation: -fstype=nfs,rw,hard,intr,nodev,exec,nosuid,rsize=8192,wsize=8192 nfs.example.com:/export/home/lionel
+    automountInformation: -fstype=nfs4,rw,hard,intr,nodev,exec,nosuid,rsize=8192,wsize=8192 nfs.example.com:home1/NAME
 
 
     på klienterna:
@@ -226,10 +229,25 @@ Konfigurera autofs så att den monterar /home/$USERNAME från användarens hemka
 
 Kontrollera att dina test-användare kan logga in och att deras hemkataloger monteras in korrekt
 
+    testade att logga in på användaren på en klient och körde df -h och home var korrekt mountad
+    te4x419@client-1:~$ df -h
+    Filesystem                               Size  Used Avail Use% Mounted on
+    udev                                     465M     0  465M   0% /dev
+    tmpfs                                     97M  476K   96M   1% /run
+    /dev/sda1                                 24G  2.0G   21G   9% /
+    tmpfs                                    483M     0  483M   0% /dev/shm
+    tmpfs                                    5.0M     0  5.0M   0% /run/lock
+    10.0.0.2:/usr/local                       24G  1.9G   21G   9% /mnt/nfs_local
+    server.rasmus.rikard.com:/home1/te4x419  189M  8.0K  175M   1% /home/te4x419
+    tmpfs                                     97M     0   97M   0% /run/user/1007
+    tmpfs                                     97M     0   97M   0% /run/user/0
+
+
 Utöka ert skapa-användare-skript från Lab 7. LDAP så att användarens hemkatalog skapas i antigen /home1 eller /home2.
 Ett konto ska kunna skapas på servern, och sedan loggas in med från godtycklig klient där användarens hemkatalog ska nu monteras in vid inloggning. Detta kan kräva uppdatering av LDAP-katalogen med automount-information.
 
 
+
 TODO:
-skapa ldif fil lägg till från https://help.ubuntu.com/community/AutofsLDAP automount till fram till och med "lionel" och modda för våran ldap
-Kolla sedan på infon i "Lionel" och anpassa till våra testanvändare.
+modify generate accounts och komma på hur vi också lägger till användarens automount entry i ldap på ett bra sätt. 
+(Brute force lösning: skapa en temporär ldif fil, peta in username på rätt ställe och kör ldapadd som admin)
