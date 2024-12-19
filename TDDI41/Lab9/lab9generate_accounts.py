@@ -41,7 +41,7 @@ def add_automount_entry(username):
     # Define automount attributes
     dn = f"cn={username},ou=automount,dc=example,dc=com"  # Adjust based on your LDAP structure
     automount_key = username
-    automount_info = f"-fstype=nfs,rw server:/home/{username}"  # Customize the mount options and server path
+    automount_info = f"-fstype=nfs4,rw server:/home/{username}"  # Customize the mount options and server path
 
     # Use ldapmodify to add the automount entry
     cmd = [
