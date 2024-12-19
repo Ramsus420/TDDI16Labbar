@@ -249,5 +249,3 @@ Ett konto ska kunna skapas på servern, och sedan loggas in med från godtycklig
 
 
 TODO:
-modify generate accounts och komma på hur vi också lägger till användarens automount entry i ldap på ett bra sätt. 
-(Brute force lösning: skapa en temporär ldif fil, peta in username på rätt ställe och kör ldapadd som admin)

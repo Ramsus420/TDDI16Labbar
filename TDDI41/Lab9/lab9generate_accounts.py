@@ -34,26 +34,29 @@ def create_user(username):
     # Flytta användarens hemmapp från /home till /home1
     #Fundera på hur vi kan skapa automountklassen för användaren och lägga till den i ldap
         # Add automount entry to LDAP for the user
+    subprocess.run(["mkdir", "-p", f"/home1/{username}"])
+    subprocess.run(["usermod", "-d", f"/home1/{username}", username])
+
     add_automount_entry(username)
 
 
 def add_automount_entry(username):
     # Define automount attributes
-    dn = f"cn={username},ou=automount,dc=example,dc=com"  # Adjust based on your LDAP structure
-    automount_key = username
-    automount_info = f"-fstype=nfs4,rw server:/home/{username}"  # Customize the mount options and server path
+    dn = f"cn={username},ou=auto.home,ou=automount,ou=admin,dc=rasmus,dc=rikard,dc=com"  # Adjust based on your LDAP structure
+    automount_info = f"-fstype=nfs4,rw,hard,intr,nodev,exec,nosuid,rsize=8192,wsize=8192 server.rasmus.rikard.com:/home1/{username}"  # Customize the mount options and server path
 
     # Use ldapmodify to add the automount entry
     cmd = [
-        "ldapmodify", "-x", "-D", "cn=admin,dc=example,dc=com", "-w", "admin_password"
+        "ldapmodify", "-x", "-D", "cn=admin,dc=rasmus,dc=rikard,dc=com", "-w", "123"
     ]
     input_data = f"""
-    dn: {dn}
-    changetype: add
-    objectClass: automount
-    automountKey: {automount_key}
-    automountInformation: {automount_info}
-    """
+dn: {dn}
+changetype: add
+cn: {username}
+objectClass: top
+objectClass: automount
+automountInformation: {automount_info}
+"""
 
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = proc.communicate(input=input_data.encode('utf-8'))

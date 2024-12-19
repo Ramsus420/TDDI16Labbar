@@ -8,12 +8,12 @@ def test_exports():
     assert "rw,sync,no_subtree_check" in result.stdout.strip()
 
     result = subprocess.run("cat /etc/exports | grep 10.0.0.3", shell=True, stdout=subprocess.PIPE, text=True)
-    assert "/home1 10.0.0.3:/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
-    assert "/home2 10.0.0.3:/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
+    assert "/home1 10.0.0.3/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
+    assert "/home2 10.0.0.3/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
 
     result = subprocess.run("cat /etc/exports | grep 10.0.0.4", shell=True, stdout=subprocess.PIPE, text=True)
-    assert "/home1 10.0.0.4:/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
-    assert "/home2 10.0.0.4:/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
+    assert "/home1 10.0.0.4/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
+    assert "/home2 10.0.0.4/24(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
 
     #hittade showmount -e att köra på klienterna men det hänger sig bara.
     #vad är det vi ens ska kolla här?
