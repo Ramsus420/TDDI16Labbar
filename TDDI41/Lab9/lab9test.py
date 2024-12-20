@@ -18,10 +18,17 @@ def test_exports():
     #hittade showmount -e att köra på klienterna men det hänger sig bara.
     #vad är det vi ens ska kolla här?
 
-def test_started():
+def server_test_started():
     result = subprocess.run("systemctl status slapd | grep active", shell=True, stdout=subprocess.PIPE, text=True)
     assert "active (running)" in result.stdout.strip()
 
+    result = subprocess.run("systemctl status autofs | grep active", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "active (running)" in result.stdout.strip()
+
+    result = subprocess.run("systemctl status nfs-kernel-server | grep active", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "active (exited)" in result.stdout.strip()
+
+def client_test_started():
     result = subprocess.run("systemctl status autofs | grep active", shell=True, stdout=subprocess.PIPE, text=True)
     assert "active (running)" in result.stdout.strip()
 
@@ -46,10 +53,11 @@ def test_ldap_auto():
     assert "type: ldap" in result.stdout.strip()
 
 if hostname == "server":
-    test_started()
+    server_test_started()
     test_firewall()
     test_exports()
 else:
     test_nsswitch()
     test_mount_local()
     test_ldap_auto()
+    client_test_started()

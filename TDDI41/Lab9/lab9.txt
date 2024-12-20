@@ -157,14 +157,15 @@ Skapa två nya test-användare, men flytta en användares hemkatalog till /home2
     description: User account
 
 Konfigurera din NFS-server för att uttryckligen exportera /home1 och /home2 med rätt behörigheter (läs/skriv-rättigheter, root_squash) till dina klienter (och endast dina klienter). Uttryckligen betyder att ni ska skriva ut det, även om det är default-värdet.
-    la till /home1 10.0.0.3/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
-    la till /home2 10.0.0.3/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
-    la till /home1 10.0.0.4/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
-    la till /home2 10.0.0.4/24(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home1 10.0.0.3(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home2 10.0.0.3(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home1 10.0.0.4(rw,sync,no_subtree_check,root_squash) i /etc/exports
+    la till /home2 10.0.0.4(rw,sync,no_subtree_check,root_squash) i /etc/exports
 Installera autofs på dina klienter och server.
     apt install autofs och autofs-ldap
 Konfigurera autofs så att den monterar /home/$USERNAME från användarens hemkatalog på NFS-servern. Om användaren mytestuser har en hemkatalog där filerna ligger under /home2/mytestuser på servern, ska den monteras under /home/mytestuser på klienten. Gör /home till en indirekt monteringspunkt - det vill säga att automounter automatiskt monterar underkataloger för /home, men inte /home själv. Du behöver antagligen en post i LDAP per användare. 
     
+    på server:
     la till i /etc/autofs.conf
     map_object_class = automountMap
     entry_object_class = automount

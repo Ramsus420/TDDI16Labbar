@@ -25,7 +25,10 @@ def generate_username(name):
 
 
 def create_user(username):
-    subprocess.run(["useradd", username])
+
+   # subprocess.run(["mkdir", "-p", f"/home1/{username}"])
+
+    subprocess.run(["useradd", "-md", f"/home1/{username}", username])
     #get uid from ldapusern
     uid = subprocess.run(["id", "-u", username], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
     #create local user with same uid
@@ -34,9 +37,6 @@ def create_user(username):
     # Flytta användarens hemmapp från /home till /home1
     #Fundera på hur vi kan skapa automountklassen för användaren och lägga till den i ldap
         # Add automount entry to LDAP for the user
-    subprocess.run(["mkdir", "-p", f"/home1/{username}"])
-    subprocess.run(["usermod", "-d", f"/home1/{username}", username])
-
     add_automount_entry(username)
 
 
