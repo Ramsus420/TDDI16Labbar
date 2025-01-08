@@ -109,6 +109,16 @@ Konfigurera era klienter så att de statiskt monterar in /usr/local från er ser
     skapa en directory /mnt/nfs_local
     la till i fstab 10.0.0.2:/usr/local /mnt/nfs_local nfs defaults 0 0
 
+    startade om en klient och körde df -h och den var monterad korrekt
+    root@client-1:~# df -h
+    Filesystem           Size  Used Avail Use% Mounted on
+    udev                 465M     0  465M   0% /dev
+    tmpfs                 97M  476K   96M   1% /run
+    /dev/sda1             24G  2.0G   21G   9% /
+    tmpfs                483M     0  483M   0% /dev/shm
+    tmpfs                5.0M     0  5.0M   0% /run/lock
+    10.0.0.2:/usr/local   24G  2.0G   21G   9% /mnt/nfs_local
+    tmpfs                 97M     0   97M   0% /run/user/0
 
 
 

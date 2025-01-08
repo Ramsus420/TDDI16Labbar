@@ -44,6 +44,7 @@ def test_nsswitch():
     result = subprocess.run("cat /etc/nsswitch.conf | grep automount", shell=True, stdout=subprocess.PIPE, text=True)
     assert "ldap" in result.stdout.strip()
 
+#testar om /usr/local är monterad på /mnt/nfs_local efter upstart
 def test_mount_local():
     result = subprocess.run("df -h | grep 10.0.0.2:/usr/local", shell=True, stdout=subprocess.PIPE, text=True)
     assert "/mnt/nfs_local" in result.stdout.strip()
@@ -51,6 +52,12 @@ def test_mount_local():
 def test_ldap_auto():
     result = subprocess.run("automount -m | grep type", shell=True, stdout=subprocess.PIPE, text=True)
     assert "type: ldap" in result.stdout.strip()
+
+def test_ldap_automaster():
+    result = subprocess.run("cat /etc/default/autofs | grep auto.master", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "ou=auto.master,ou=automount,ou=admin,dc=rasmus,dc=rikard,dc=com" in result.stdout.strip()
+    result = subprocess.run("cat /etc/default/autofs | grep LDAP", shell=True, stdout=subprocess.PIPE, text=True)
+    assert "ldap://10.0.0.2" in result.stdout.strip()
 
 if hostname == "server":
     server_test_started()
@@ -61,3 +68,4 @@ else:
     test_mount_local()
     test_ldap_auto()
     client_test_started()
+    test_ldap_automaster()
