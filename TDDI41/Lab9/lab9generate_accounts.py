@@ -2,6 +2,7 @@ import random
 import subprocess
 import sys
 import string
+import os
 
 generated_usernames = []
 
@@ -46,8 +47,13 @@ def add_automount_entry(username):
     automount_info = f"-fstype=nfs4,rw,hard,intr,nodev,exec,nosuid,rsize=8192,wsize=8192 server.rasmus.rikard.com:/home1/{username}"  # Customize the mount options and server path
 
     # Use ldapmodify to add the automount entry
+    #tar password från miljövariabel
+    ldappwd = os.getenv('LDAP_PASSWORD')
+    if ldappwd is None:
+        print("LDAP_PASSWORD environment variable not set. No entry added to LDAP.")
+        sys.exit(1)
     cmd = [
-        "ldapmodify", "-x", "-D", "cn=admin,dc=rasmus,dc=rikard,dc=com", "-w", "123"
+        "ldapmodify", "-x", "-D", "cn=admin,dc=rasmus,dc=rikard,dc=com", "-w", ldappwd
     ]
     input_data = f"""
 dn: {dn}
