@@ -16,7 +16,6 @@ def test_exports():
     assert "/home2 10.0.0.4(rw,sync,root_squash,no_subtree_check)" in result.stdout.strip()
 
     #hittade showmount -e att köra på klienterna men det hänger sig bara.
-    #vad är det vi ens ska kolla här?
 
 def server_test_started():
     result = subprocess.run("systemctl status slapd | grep active", shell=True, stdout=subprocess.PIPE, text=True)
